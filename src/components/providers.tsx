@@ -25,15 +25,19 @@ export function Providers({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const supabase = createClient();
 
-    supabase.auth.getUser().then(({ data: { user } }) => {
-      setUser(user);
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
       setLoading(false);
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
+      setUser((prev) => {
+        const newUser = session?.user ?? null;
+        if (prev?.id === newUser?.id) return prev;
+        return newUser;
+      });
       setLoading(false);
     });
 

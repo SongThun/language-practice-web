@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
+import { Roboto_Mono } from "next/font/google";
 import { Providers } from "@/components/providers";
-import "./globals.css";
-import { Geist } from "next/font/google";
 import { cn } from "@/lib/utils";
+import "./globals.css";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const robotoMono = Roboto_Mono({
+  subsets: ["latin"],
+  variable: "--font-mono",
+});
 
 export const metadata: Metadata = {
   title: "Language Practice",
@@ -17,8 +20,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", geist.variable)}>
-      <body className="min-h-screen bg-gray-50 antialiased">
+    <html lang="en" className={cn("dark", robotoMono.variable)}>
+      <body className="min-h-screen bg-background text-foreground antialiased">
         <Providers>{children}</Providers>
       </body>
     </html>

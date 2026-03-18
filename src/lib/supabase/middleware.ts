@@ -1,5 +1,6 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
+import { PROTECTED_ROUTES, AUTH_ROUTES } from "@/lib/auth";
 
 export async function updateSession(request: NextRequest) {
   let supabaseResponse = NextResponse.next({
@@ -35,8 +36,7 @@ export async function updateSession(request: NextRequest) {
   } = await supabase.auth.getUser();
 
   // Redirect unauthenticated users away from protected routes
-  const protectedPaths = ["/dashboard", "/words", "/practice"];
-  const isProtected = protectedPaths.some((path) =>
+  const isProtected = PROTECTED_ROUTES.some((path) =>
     request.nextUrl.pathname.startsWith(path)
   );
 
@@ -47,8 +47,7 @@ export async function updateSession(request: NextRequest) {
   }
 
   // Redirect authenticated users away from auth pages
-  const authPaths = ["/login", "/signup"];
-  const isAuthPage = authPaths.some((path) =>
+  const isAuthPage = AUTH_ROUTES.some((path) =>
     request.nextUrl.pathname.startsWith(path)
   );
 

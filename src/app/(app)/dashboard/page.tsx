@@ -2,6 +2,12 @@
 
 import Link from "next/link";
 import { useAuth } from "@/components/providers";
+import {
+  Card,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function DashboardPage() {
   const { user, loading } = useAuth();
@@ -9,7 +15,7 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <div className="flex items-center justify-center py-20">
-        <p className="text-gray-500">Loading...</p>
+        <p className="text-muted-foreground">loading...</p>
       </div>
     );
   }
@@ -17,41 +23,45 @@ export default function DashboardPage() {
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
-        <p className="mt-1 text-sm text-gray-600">
-          Welcome back, {user?.email}
+        <h1 className="text-2xl font-bold text-foreground">dashboard</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
+          welcome back, {user?.email}
         </p>
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <Link
-          href="/words"
-          className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow"
-        >
-          <h2 className="text-lg font-semibold text-gray-900">Words</h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Manage your vocabulary. Add new words, organize by tags, and track
-            your progress.
-          </p>
+        <Link href="/words" className="group">
+          <Card className="transition-colors hover:ring-primary/30">
+            <CardHeader>
+              <CardTitle className="text-primary">words</CardTitle>
+              <CardDescription>
+                manage your vocabulary. add new words, organize by tags, and
+                track your progress.
+              </CardDescription>
+            </CardHeader>
+          </Card>
         </Link>
 
-        <Link
-          href="/practice"
-          className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow"
-        >
-          <h2 className="text-lg font-semibold text-gray-900">Practice</h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Start a writing session. Use your words in context and get AI
-            feedback on your writing.
-          </p>
+        <Link href="/practice" className="group">
+          <Card className="transition-colors hover:ring-primary/30">
+            <CardHeader>
+              <CardTitle className="text-primary">practice</CardTitle>
+              <CardDescription>
+                start a writing session. use your words in context and get ai
+                feedback on your writing.
+              </CardDescription>
+            </CardHeader>
+          </Card>
         </Link>
 
-        <div className="rounded-lg border border-gray-200 bg-white p-6 shadow-sm">
-          <h2 className="text-lg font-semibold text-gray-900">Stats</h2>
-          <p className="mt-2 text-sm text-gray-600">
-            Track your learning progress over time. Coming soon.
-          </p>
-        </div>
+        <Card className="opacity-60">
+          <CardHeader>
+            <CardTitle className="text-muted-foreground">stats</CardTitle>
+            <CardDescription>
+              track your learning progress over time. coming soon.
+            </CardDescription>
+          </CardHeader>
+        </Card>
       </div>
     </div>
   );
