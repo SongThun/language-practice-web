@@ -31,15 +31,8 @@ export default function LoginPage() {
 
   return (
     <AuthForm
-      title="sign in"
-      description="welcome back to language practice"
-      submitLabel="sign in"
-      loadingLabel="signing in..."
+      mode="login"
       onSubmit={handleLogin}
-      googleLabel="sign in with google"
-      footerText="don't have an account?"
-      footerLinkText="sign up"
-      footerLinkHref="/signup"
       error={error}
       loading={loading}
     />

@@ -9,6 +9,12 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+const dashboardCards = [
+  { href: "/words", title: "words", description: "manage your vocabulary. add new words, organize by tags, and track your progress.", enabled: true },
+  { href: "/practice", title: "practice", description: "start a writing session. use your words in context and get ai feedback on your writing.", enabled: true },
+  { href: "#", title: "stats", description: "track your learning progress over time. coming soon.", enabled: false },
+];
+
 export default function DashboardPage() {
   const { user, loading } = useAuth();
 
@@ -30,38 +36,25 @@ export default function DashboardPage() {
       </div>
 
       <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        <Link href="/words" className="group">
-          <Card className="transition-colors hover:ring-primary/30">
-            <CardHeader>
-              <CardTitle className="text-primary">words</CardTitle>
-              <CardDescription>
-                manage your vocabulary. add new words, organize by tags, and
-                track your progress.
-              </CardDescription>
-            </CardHeader>
-          </Card>
-        </Link>
-
-        <Link href="/practice" className="group">
-          <Card className="transition-colors hover:ring-primary/30">
-            <CardHeader>
-              <CardTitle className="text-primary">practice</CardTitle>
-              <CardDescription>
-                start a writing session. use your words in context and get ai
-                feedback on your writing.
-              </CardDescription>
-            </CardHeader>
-          </Card>
-        </Link>
-
-        <Card className="opacity-60">
-          <CardHeader>
-            <CardTitle className="text-muted-foreground">stats</CardTitle>
-            <CardDescription>
-              track your learning progress over time. coming soon.
-            </CardDescription>
-          </CardHeader>
-        </Card>
+        {dashboardCards.map((card) =>
+          card.enabled ? (
+            <Link key={card.href} href={card.href} className="group">
+              <Card className="transition-colors hover:ring-primary/30">
+                <CardHeader>
+                  <CardTitle className="text-primary">{card.title}</CardTitle>
+                  <CardDescription>{card.description}</CardDescription>
+                </CardHeader>
+              </Card>
+            </Link>
+          ) : (
+            <Card key={card.title} className="opacity-60">
+              <CardHeader>
+                <CardTitle className="text-muted-foreground">{card.title}</CardTitle>
+                <CardDescription>{card.description}</CardDescription>
+              </CardHeader>
+            </Card>
+          )
+        )}
       </div>
     </div>
   );

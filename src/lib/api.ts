@@ -7,8 +7,9 @@ type RequestOptions = Omit<RequestInit, "headers"> & {
   headers?: Record<string, string>;
 };
 
-async function getAuthHeaders(): Promise<Record<string, string>> {
-  const supabase = createClient();
+async function getAuthHeaders(
+  supabase: ReturnType<typeof createClient>
+): Promise<Record<string, string>> {
   const {
     data: { session },
   } = await supabase.auth.getSession();
@@ -28,7 +29,8 @@ async function request<T>(
   endpoint: string,
   options: RequestOptions = {}
 ): Promise<T> {
-  const authHeaders = await getAuthHeaders();
+  const supabase = createClient();
+  const authHeaders = await getAuthHeaders(supabase);
   const { headers: customHeaders, ...rest } = options;
 
   const response = await fetch(`${API_BASE_URL}${endpoint}`, {
@@ -40,6 +42,34 @@ async function request<T>(
   });
 
   if (!response.ok) {
+    if (response.status === 401) {
+      const { data } = await supabase.auth.refreshSession();
+      if (data.session) {
+        // Retry the request once with the refreshed token
+        const retryHeaders: Record<string, string> = {
+          ...authHeaders,
+          ...customHeaders,
+          Authorization: `Bearer ${data.session.access_token}`,
+        };
+        const retryResponse = await fetch(`${API_BASE_URL}${endpoint}`, {
+          headers: retryHeaders,
+          ...rest,
+        });
+        if (retryResponse.ok) {
+          if (retryResponse.status === 204) {
+            return undefined as T;
+          }
+          return retryResponse.json();
+        }
+      }
+      // Refresh failed or retry failed — clear session and redirect to login
+      await supabase.auth.signOut();
+      if (typeof window !== "undefined") {
+        window.location.href = "/login?error=session_expired";
+      }
+      throw new ApiError(401, "Session expired");
+    }
+
     const error = await response.json().catch(() => ({
       detail: response.statusText,
     }));

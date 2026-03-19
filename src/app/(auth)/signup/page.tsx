@@ -27,7 +27,7 @@ export default function SignupPage() {
       email,
       password,
       options: {
-        emailRedirectTo: `${window.location.origin}/auth/callback`,
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_APP_URL || window.location.origin}/auth/callback`,
       },
     });
 
@@ -70,18 +70,10 @@ export default function SignupPage() {
 
   return (
     <AuthForm
-      title="create an account"
-      description="start building your vocabulary"
-      submitLabel="sign up"
-      loadingLabel="creating account..."
+      mode="signup"
       onSubmit={handleSignup}
-      googleLabel="sign up with google"
-      footerText="already have an account?"
-      footerLinkText="sign in"
-      footerLinkHref="/login"
       error={error}
       loading={loading}
-      passwordMinLength={6}
     />
   );
 }

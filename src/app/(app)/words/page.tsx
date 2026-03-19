@@ -12,8 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-export default function WordsPage() {
-  const [showAddForm, setShowAddForm] = useState(false);
+function AddWordForm({ onClose }: { onClose: () => void }) {
   const [word, setWord] = useState("");
   const [language, setLanguage] = useState("");
   const [definition, setDefinition] = useState("");
@@ -23,12 +22,69 @@ export default function WordsPage() {
     e.preventDefault();
     // TODO: send to API
     console.log({ word, language, definition, tags: tags.split(",").map((t) => t.trim()).filter(Boolean) });
-    setWord("");
-    setLanguage("");
-    setDefinition("");
-    setTags("");
-    setShowAddForm(false);
+    onClose();
   }
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle>add a new word</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="grid gap-4 sm:grid-cols-2">
+            <div className="space-y-2">
+              <Label htmlFor="word">word or phrase</Label>
+              <Input
+                id="word"
+                type="text"
+                required
+                value={word}
+                onChange={(e) => setWord(e.target.value)}
+                placeholder="e.g., ubiquitous"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="language">language</Label>
+              <Input
+                id="language"
+                type="text"
+                required
+                value={language}
+                onChange={(e) => setLanguage(e.target.value)}
+                placeholder="e.g., english"
+              />
+            </div>
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="definition">definition or translation</Label>
+            <Textarea
+              id="definition"
+              rows={2}
+              value={definition}
+              onChange={(e) => setDefinition(e.target.value)}
+              placeholder="your own definition or translation"
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="tags">tags</Label>
+            <Input
+              id="tags"
+              type="text"
+              value={tags}
+              onChange={(e) => setTags(e.target.value)}
+              placeholder="comma-separated, e.g., academic, formal"
+            />
+          </div>
+          <Button type="submit">save word</Button>
+        </form>
+      </CardContent>
+    </Card>
+  );
+}
+
+export default function WordsPage() {
+  const [showAddForm, setShowAddForm] = useState(false);
 
   return (
     <div className="space-y-6">
@@ -47,64 +103,8 @@ export default function WordsPage() {
         </Button>
       </div>
 
-      {showAddForm && (
-        <Card>
-          <CardHeader>
-            <CardTitle>add a new word</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="grid gap-4 sm:grid-cols-2">
-                <div className="space-y-2">
-                  <Label htmlFor="word">word or phrase</Label>
-                  <Input
-                    id="word"
-                    type="text"
-                    required
-                    value={word}
-                    onChange={(e) => setWord(e.target.value)}
-                    placeholder="e.g., ubiquitous"
-                  />
-                </div>
-                <div className="space-y-2">
-                  <Label htmlFor="language">language</Label>
-                  <Input
-                    id="language"
-                    type="text"
-                    required
-                    value={language}
-                    onChange={(e) => setLanguage(e.target.value)}
-                    placeholder="e.g., english"
-                  />
-                </div>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="definition">definition or translation</Label>
-                <Textarea
-                  id="definition"
-                  rows={2}
-                  value={definition}
-                  onChange={(e) => setDefinition(e.target.value)}
-                  placeholder="your own definition or translation"
-                />
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="tags">tags</Label>
-                <Input
-                  id="tags"
-                  type="text"
-                  value={tags}
-                  onChange={(e) => setTags(e.target.value)}
-                  placeholder="comma-separated, e.g., academic, formal"
-                />
-              </div>
-              <Button type="submit">save word</Button>
-            </form>
-          </CardContent>
-        </Card>
-      )}
+      {showAddForm && <AddWordForm onClose={() => setShowAddForm(false)} />}
 
-      {/* Search and filter bar */}
       <div className="flex gap-4">
         <Input
           type="text"
@@ -116,7 +116,6 @@ export default function WordsPage() {
         </select>
       </div>
 
-      {/* Empty state */}
       <div className="rounded-lg border-2 border-dashed border-border p-12 text-center">
         <p className="text-sm text-muted-foreground">
           no words yet. click &quot;add word&quot; to start building your

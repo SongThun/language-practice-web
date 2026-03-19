@@ -17,34 +17,49 @@ import { createClient } from "@/lib/supabase/client";
 import { signInWithGoogle } from "@/lib/auth";
 
 type AuthFormProps = {
-  title: string;
-  description: string;
-  submitLabel: string;
-  loadingLabel: string;
+  mode: "login" | "signup";
   onSubmit: (email: string, password: string) => Promise<void>;
-  googleLabel: string;
-  footerText: string;
-  footerLinkText: string;
-  footerLinkHref: string;
   error: string | null;
   loading: boolean;
-  passwordMinLength?: number;
 };
 
-export function AuthForm({
-  title,
-  description,
-  submitLabel,
-  loadingLabel,
-  onSubmit,
-  googleLabel,
-  footerText,
-  footerLinkText,
-  footerLinkHref,
-  error,
-  loading,
-  passwordMinLength,
-}: AuthFormProps) {
+const modeConfig = {
+  login: {
+    title: "sign in",
+    description: "welcome back to language practice",
+    submitLabel: "sign in",
+    loadingLabel: "signing in...",
+    googleLabel: "sign in with google",
+    footerText: "don't have an account?",
+    footerLinkText: "sign up",
+    footerLinkHref: "/signup",
+    passwordMinLength: undefined,
+  },
+  signup: {
+    title: "create an account",
+    description: "start building your vocabulary",
+    submitLabel: "sign up",
+    loadingLabel: "creating account...",
+    googleLabel: "sign up with google",
+    footerText: "already have an account?",
+    footerLinkText: "sign in",
+    footerLinkHref: "/login",
+    passwordMinLength: 6,
+  },
+} as const;
+
+export function AuthForm({ mode, onSubmit, error, loading }: AuthFormProps) {
+  const {
+    title,
+    description,
+    submitLabel,
+    loadingLabel,
+    googleLabel,
+    footerText,
+    footerLinkText,
+    footerLinkHref,
+    passwordMinLength,
+  } = modeConfig[mode];
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [googleError, setGoogleError] = useState<string | null>(null);
